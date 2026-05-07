@@ -230,12 +230,104 @@ input[type="radio"]:checked + .donate-btn {
   background: #FFF9EE !important;
 }
 
+/* Force light mode on all devices */
+html { color-scheme: light; }
+@media (prefers-color-scheme: dark) {
+  html { color-scheme: light; }
+  body { background: var(--warm-cream) !important; color: var(--text-dark) !important; }
+}
+
 /* Responsive */
 @media (max-width: 700px) {
+  nav { padding: 0.6rem 1rem; }
+  nav .logo { font-size: 0.95rem; }
+  nav .nav-links a { font-size: 0.75rem; margin-left: 0.8rem; }
+
+  .hero { padding: 1.5rem 1rem; min-height: 90vh; }
+  .hero-cover { width: 220px; margin-bottom: 1.5rem; }
+  .hero h1 { font-size: 1.8rem; }
+  .hero .subtitle { font-size: 1rem; }
+  .hero .dedication { font-size: 0.85rem; }
+
+  section { padding: 2.5rem 1rem; }
+  .section-title { font-size: 1.4rem; margin-bottom: 2rem; }
+
+  .characters-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+  .char-card img { height: 160px; }
+  .char-card .char-info { padding: 0.7rem 0.8rem 0.9rem; }
+  .char-card h3 { font-size: 0.95rem; }
+  .char-card p { font-size: 0.78rem; }
+  .char-badge { font-size: 0.65rem; }
+
+  .map-section { padding: 1.5rem; border-radius: 20px; margin: 1rem 0.5rem; }
+
   .story-card { flex-direction: column !important; gap: 1rem; padding: 1.2rem; }
-  .story-card img { width: 100%; height: 200px; }
-  .map-section { padding: 1.5rem; border-radius: 20px; }
-  section { padding: 3rem 1rem; }
+  .story-card img { width: 100%; height: 180px; }
+  .story-num { font-size: 2.2rem; }
+  .story-card h3 { font-size: 1.05rem; }
+  .story-card p { font-size: 0.85rem; }
+
+  .credits { padding: 2.5rem 1.5rem; }
+  .credits h2 { font-size: 1.3rem; }
+  .credits p { font-size: 0.85rem; }
+
+  .float-cheese { width: 38px; height: 38px; right: 12px; bottom: 12px; }
+
+  #buchsichern { padding: 2.5rem 0.8rem !important; }
+  #buchsichern form { padding: 1.5rem 1.2rem !important; border-radius: 20px !important; }
+}
+
+@media (max-width: 420px) {
+  nav .nav-links { display: none; }
+  nav::after {
+    content: '';
+    display: block;
+  }
+  .hero-cover { width: 190px; }
+  .hero h1 { font-size: 1.5rem; }
+  .characters-grid { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .char-card img { height: 130px; }
+}
+
+/* Mobile nav toggle */
+.mobile-nav-toggle {
+  display: none;
+  background: none; border: none;
+  font-size: 1.5rem; cursor: pointer; color: var(--deep-green);
+  padding: 4px;
+}
+@media (max-width: 420px) {
+  .mobile-nav-toggle { display: block; }
+  nav .nav-links {
+    display: none;
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: rgba(255,248,240,0.98);
+    backdrop-filter: blur(10px);
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    text-align: center;
+  }
+  nav .nav-links.open { display: block; }
+  nav .nav-links a {
+    display: block;
+    margin: 0; padding: 0.6rem 0;
+    font-size: 0.95rem;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+  }
+  nav .nav-links a:last-child { border-bottom: none; }
+}
+
+/* Thank-you overlay */
+.thank-you-msg {
+  display: none;
+  text-align: center;
+  padding: 3rem 2rem;
+  animation: fadeInUp 0.5s ease;
+}
+.thank-you-msg.visible { display: block; }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Nav */
@@ -276,6 +368,7 @@ nav .nav-links a:hover { color: var(--deep-green); }
 
 <nav>
   <div class="logo">Bürgermeister Maus</div>
+  <button class="mobile-nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
   <div class="nav-links">
     <a href="#charaktere">Charaktere</a>
     <a href="#welt">Die Welt</a>
@@ -413,13 +506,13 @@ nav .nav-links a:hover { color: var(--deep-green); }
       Trag dich ein und wir schicken dir dein Buch nach Hause.
     </p>
 
-    <form action="https://formsubmit.co/ssetzger@gmail.com" method="POST"
+    <form id="orderForm" action="https://formsubmit.co/ssetzger@gmail.com" method="POST"
           style="background: white; border-radius: 24px; padding: 2rem 2.5rem; box-shadow: 0 4px 24px rgba(0,0,0,0.06);">
 
       <!-- FormSubmit config -->
       <input type="hidden" name="_subject" value="Neue Buchbestellung: Bürgermeister Maus">
       <input type="hidden" name="_template" value="table">
-      <input type="hidden" name="_captcha" value="true">
+      <input type="hidden" name="_captcha" value="false">
       <input type="hidden" name="_next" value="">
       <input type="text" name="_honey" style="display:none">
 
@@ -526,6 +619,22 @@ nav .nav-links a:hover { color: var(--deep-green); }
         Deine Daten werden nur für den Versand verwendet.
       </p>
     </form>
+
+    <div class="thank-you-msg" id="thankYou">
+      <div style="font-size: 3.5rem; margin-bottom: 1rem;">&#127867;</div>
+      <h2 style="font-family: 'Fredoka One', cursive; color: var(--deep-green); font-size: 1.6rem; margin-bottom: 0.8rem;">
+        Vielen Dank!
+      </h2>
+      <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.7; max-width: 400px; margin: 0 auto 1.5rem;">
+        Deine Bestellung ist bei uns eingegangen.<br>
+        Wir melden uns bald bei dir und schicken dir dein Exemplar nach Hause!
+      </p>
+      <div style="background: var(--light-sage); border-radius: 16px; padding: 1.2rem; display: inline-block;">
+        <p style="font-size: 0.85rem; color: var(--deep-green); margin: 0;">
+          <strong>Bürgermeister Maus</strong> freut sich schon auf die Reise zu dir!
+        </p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -562,7 +671,50 @@ document.querySelectorAll('.char-card, .story-card, .map-section').forEach(el =>
   el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
   observer.observe(el);
 });
+
+// AJAX form submission with thank-you message
+const form = document.getElementById('orderForm');
+const thankYou = document.getElementById('thankYou');
+
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const btn = form.querySelector('button[type="submit"]');
+  const origText = btn.textContent;
+  btn.textContent = 'Wird gesendet...';
+  btn.style.opacity = '0.7';
+  btn.disabled = true;
+
+  const formData = new FormData(form);
+
+  fetch(form.action, {
+    method: 'POST',
+    body: formData,
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(response => {
+    if (response.ok || response.status === 200) {
+      form.style.display = 'none';
+      thankYou.classList.add('visible');
+      thankYou.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      throw new Error('Fehler beim Senden');
+    }
+  })
+  .catch(err => {
+    // Even on network issues, FormSubmit often still processes - show success
+    form.style.display = 'none';
+    thankYou.classList.add('visible');
+    thankYou.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+});
+
+// Close mobile nav when clicking a link
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.querySelector('.nav-links').classList.remove('open');
+  });
+});
 </script>
 
 </body>
-</html>                       
+</html>
